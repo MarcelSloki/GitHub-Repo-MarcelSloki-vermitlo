@@ -4,6 +4,7 @@ import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
 
+from .storage import AuditStore
 from .workflow import run_demo
 
 
@@ -24,7 +25,13 @@ class Handler(BaseHTTPRequestHandler):
         if length:
             payload = json.loads(self.rfile.read(length).decode("utf-8"))
         approved = bool(payload.get("approved", True))
-        self._json(run_demo(approved=approved))
+        no_go = bool(payload.get("no_go", False))
+        result = run_demo(approved=approved, no_go=no_go)
+        db_path = payload.get("db_path")
+        if db_path:
+            run_id = AuditStore(str(db_path)).save_demo_run(result)
+            result["audit_persistence"] = {"db_path": str(db_path), "run_id": run_id}
+        self._json(result)
 
     def log_message(self, format: str, *args: Any) -> None:
         return

@@ -112,9 +112,9 @@ def select_references(company: CompanyProfile, tender: Tender, limit: int = 2) -
 
 
 def build_dossier(company: CompanyProfile, tender: Tender, match: MatchResult) -> OfferDossier:
-    selected_references = select_references(company, tender)
+    selected_references = [] if match.decision == Decision.NO_BID else select_references(company, tender)
     missing_information: list[str] = []
-    if not selected_references:
+    if not selected_references and match.decision != Decision.NO_BID:
         missing_information.append("No source-backed reference project matches the tender capabilities")
     if match.ko_reasons:
         missing_information.extend(match.ko_reasons)
@@ -126,7 +126,7 @@ def build_dossier(company: CompanyProfile, tender: Tender, match: MatchResult) -
         match_score=match.score,
         ko_reasons=match.ko_reasons,
         selected_reference_ids=selected_references,
-        pricing=prepare_pricing(tender, match),
+        pricing=None if match.decision == Decision.NO_BID else prepare_pricing(tender, match),
         approval_required=True,
         missing_information=missing_information,
         source_attribution=[tender.source_url],
@@ -155,9 +155,10 @@ def simulate_submission(dossier: OfferDossier, approval: Approval) -> Submission
 
 def simulate_outcome(submission: SubmissionResult, dossier: OfferDossier) -> OutcomeResult:
     awarded = submission.status == SubmissionStatus.SIMULATED_SUBMITTED and dossier.match_score >= 75
+    award_value = dossier.pricing.total_price_eur if awarded and dossier.pricing else 0
     return OutcomeResult(
         awarded=awarded,
-        award_value_eur=dossier.pricing.total_price_eur if awarded else 0,
+        award_value_eur=award_value,
         reason="High match score in demo simulation" if awarded else "Not awarded in demo simulation",
     )
 
