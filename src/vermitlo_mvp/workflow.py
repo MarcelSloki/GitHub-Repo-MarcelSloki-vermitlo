@@ -10,6 +10,7 @@ from .rules import (
     simulate_submission,
 )
 from .seed_loader import load_company_profile, load_tender
+from .storage import WorkflowStore
 
 
 def run_demo(approved: bool = True) -> dict:
@@ -40,3 +41,10 @@ def run_demo(approved: bool = True) -> dict:
             "learning": learning,
         }
     )
+
+
+def run_and_persist_demo(approved: bool = True, db_path: str | None = None) -> dict:
+    result = run_demo(approved=approved)
+    store = WorkflowStore(db_path) if db_path else WorkflowStore()
+    run_id = store.save_workflow_run(result)
+    return {"run_id": run_id, **result}

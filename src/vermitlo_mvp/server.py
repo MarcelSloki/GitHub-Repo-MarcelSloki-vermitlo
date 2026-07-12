@@ -5,12 +5,16 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
 
 from .workflow import run_demo
+from .storage import WorkflowStore
 
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
         if self.path == "/health":
             self._json({"status": "ok", "service": "vermitlo-mvp"})
+            return
+        if self.path == "/runs":
+            self._json({"runs": WorkflowStore().list_workflow_runs()})
             return
         self._json({"error": "not_found"}, status=404)
 
@@ -24,7 +28,9 @@ class Handler(BaseHTTPRequestHandler):
         if length:
             payload = json.loads(self.rfile.read(length).decode("utf-8"))
         approved = bool(payload.get("approved", True))
-        self._json(run_demo(approved=approved))
+        result = run_demo(approved=approved)
+        run_id = WorkflowStore().save_workflow_run(result)
+        self._json({"run_id": run_id, **result})
 
     def log_message(self, format: str, *args: Any) -> None:
         return
