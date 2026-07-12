@@ -37,6 +37,14 @@ Then open `http://127.0.0.1:8000/health`, `http://127.0.0.1:8000/demo/golden-flo
 PYTHONPATH=src python -m unittest discover -s tests
 ```
 
+## Persistence baseline
+
+The first migration-ready schema is in `migrations/0001_initial.sql`.
+It covers tenants, company profiles, tenders, requirements, K.O. criteria,
+match evaluations, pricing drafts, dossiers, approvals, submission simulations,
+outcome simulations, billing, invoices, payment simulations, and audit log
+entries.
+
 ## MVP boundaries
 
 - No legally binding offer is submitted without explicit human approval.
