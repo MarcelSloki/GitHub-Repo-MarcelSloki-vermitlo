@@ -1,0 +1,8 @@
+[project]
+name = "vermitlo-mvp"
+version = "0.1.0"
+description = "Local executable scaffold for the Vermitlo MVP core flow."
+requires-python = ">=3.12"
+
+[tool.unittest]
+testpaths = ["tests"]
