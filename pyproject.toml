@@ -1,0 +1,12 @@
+[project]
+name = "vermitlo-mvp"
+version = "0.1.0"
+description = "Executable MVP core for the Vermitlo tender workflow."
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

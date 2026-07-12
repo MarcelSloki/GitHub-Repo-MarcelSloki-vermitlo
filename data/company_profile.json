@@ -1,0 +1,42 @@
+{
+  "id": "company-demo-it-001",
+  "legal_name": "Demo IT Services GmbH",
+  "country": "DE",
+  "industries": ["public-sector", "healthcare", "education"],
+  "capabilities": [
+    "requirements-analysis",
+    "software-development",
+    "cloud-migration",
+    "it-security",
+    "support",
+    "project-management"
+  ],
+  "certifications": ["ISO 9001", "ISO 27001"],
+  "max_contract_value_eur": 750000,
+  "references": [
+    {
+      "id": "ref-cloud-001",
+      "title": "Cloud migration for municipal services platform",
+      "industries": ["public-sector"],
+      "capabilities": ["cloud-migration", "software-development", "support"],
+      "contract_value_eur": 420000,
+      "evidence": {
+        "source": "customer-approved-reference-sheet",
+        "quality": "demo",
+        "note": "Synthetic demo reference; replace with approved customer evidence before real use."
+      }
+    },
+    {
+      "id": "ref-security-002",
+      "title": "Security hardening and support for education portal",
+      "industries": ["education"],
+      "capabilities": ["it-security", "support", "project-management"],
+      "contract_value_eur": 280000,
+      "evidence": {
+        "source": "customer-approved-reference-sheet",
+        "quality": "demo",
+        "note": "Synthetic demo reference; replace with approved customer evidence before real use."
+      }
+    }
+  ]
+}

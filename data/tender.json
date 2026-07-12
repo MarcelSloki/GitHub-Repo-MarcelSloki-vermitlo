@@ -1,0 +1,41 @@
+{
+  "id": "tender-demo-2026-001",
+  "title": "Framework agreement for secure cloud migration and application support",
+  "buyer": "Demo Public Buyer",
+  "country": "DE",
+  "estimated_value_eur": 500000,
+  "source_url": "https://example.invalid/public-tender/demo-2026-001",
+  "deadline": "2026-09-15",
+  "requirements": [
+    {
+      "id": "req-001",
+      "text": "Supplier must hold ISO 27001 certification.",
+      "category": "certification",
+      "mandatory": true,
+      "keywords": ["it-security"],
+      "required_certification": "ISO 27001"
+    },
+    {
+      "id": "req-002",
+      "text": "Supplier must provide cloud migration and software development services.",
+      "category": "capability",
+      "mandatory": true,
+      "keywords": ["cloud-migration", "software-development"]
+    },
+    {
+      "id": "req-003",
+      "text": "Supplier should provide ongoing support and project management.",
+      "category": "capability",
+      "mandatory": false,
+      "keywords": ["support", "project-management"]
+    },
+    {
+      "id": "req-004",
+      "text": "Supplier must have capacity for projects above EUR 400,000.",
+      "category": "capacity",
+      "mandatory": true,
+      "keywords": ["project-management"],
+      "min_contract_value_eur": 400000
+    }
+  ]
+}
