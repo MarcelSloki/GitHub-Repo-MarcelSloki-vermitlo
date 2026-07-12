@@ -8,6 +8,19 @@ The first persistence layer is intentionally small and local-first.
 - `vermitlo_mvp.persistence.apply_migrations(db_path)` applies all SQL files in order.
 - `seed_demo_data(db_path)` loads the existing `data/company_profile.json` and `data/tender.json` into the schema.
 - `persist_demo_run(db_path, approved=True)` runs the current demo workflow and stores the resulting match, dossier, approval, submission simulation, outcome simulation, billing event, and audit event.
+- Read-model helpers return tenant, company, tender, and latest dossier snapshots for API use.
+
+## API surface
+
+The FastAPI scaffold exposes persisted demo objects through read-only endpoints:
+
+- `POST /demo/persist`
+- `GET /tenants/tenant-demo-it-001`
+- `GET /company-profile`
+- `GET /tender`
+- `GET /dossier/latest`
+
+Each endpoint initializes and seeds the local demo database if needed. The default database path is `var/vermitlo.sqlite3` and can be changed with `VERMITLO_DB_PATH`.
 
 ## Current boundary
 
@@ -28,4 +41,4 @@ PY
 
 ## Next step
 
-Expose read-only API endpoints for persisted tenants, company profiles, tenders, and the latest demo dossier snapshot. Then add a proper migration command or script once the repository layout settles.
+Add a small UI read path that calls the persisted API endpoints and renders the current tenant, tender, match, dossier, approval/submission, and billing state in one dashboard view.

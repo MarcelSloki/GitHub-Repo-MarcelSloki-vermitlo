@@ -31,6 +31,11 @@ def apply_migrations(db_path: str | Path, migrations_dir: Path = MIGRATIONS_DIR)
             connection.executescript(migration.read_text(encoding="utf-8"))
 
 
+def initialize_demo_database(db_path: str | Path, approved: bool = True) -> dict[str, str | int]:
+    apply_migrations(db_path)
+    return persist_demo_run(db_path, approved=approved)
+
+
 def seed_demo_data(
     db_path: str | Path,
     tenant_id: str = DEFAULT_TENANT_ID,
@@ -300,6 +305,195 @@ def persist_demo_run(
     }
 
 
+def get_tenant_overview(db_path: str | Path, tenant_id: str = DEFAULT_TENANT_ID) -> dict[str, Any]:
+    with connect(db_path) as connection:
+        tenant = connection.execute(
+            "SELECT id, name, created_at FROM tenants WHERE id = ?",
+            (tenant_id,),
+        ).fetchone()
+        if tenant is None:
+            raise LookupError(f"Tenant not found: {tenant_id}")
+        counts = {
+            table: _count_for_tenant(connection, table, tenant_id)
+            for table in (
+                "company_profiles",
+                "tenders",
+                "match_decisions",
+                "proposal_dossiers",
+                "approvals",
+                "submission_simulations",
+                "billing_events",
+                "audit_events",
+            )
+        }
+    return {"id": tenant["id"], "name": tenant["name"], "created_at": tenant["created_at"], "counts": counts}
+
+
+def get_company_profile_snapshot(db_path: str | Path, tenant_id: str = DEFAULT_TENANT_ID) -> dict[str, Any]:
+    with connect(db_path) as connection:
+        company = connection.execute(
+            """
+            SELECT * FROM company_profiles
+            WHERE tenant_id = ?
+            ORDER BY created_at DESC
+            LIMIT 1
+            """,
+            (tenant_id,),
+        ).fetchone()
+        if company is None:
+            raise LookupError(f"Company profile not found for tenant: {tenant_id}")
+        references = connection.execute(
+            """
+            SELECT * FROM reference_projects
+            WHERE company_profile_id = ?
+            ORDER BY id
+            """,
+            (company["id"],),
+        ).fetchall()
+    return {
+        "id": company["id"],
+        "tenant_id": company["tenant_id"],
+        "legal_name": company["legal_name"],
+        "country": company["country"],
+        "industries": _loads(company["industries_json"]),
+        "capabilities": _loads(company["capabilities_json"]),
+        "certifications": _loads(company["certifications_json"]),
+        "max_contract_value_eur": company["max_contract_value_eur"],
+        "references": [
+            {
+                "id": reference["id"],
+                "title": reference["title"],
+                "industries": _loads(reference["industries_json"]),
+                "capabilities": _loads(reference["capabilities_json"]),
+                "contract_value_eur": reference["contract_value_eur"],
+                "evidence": {
+                    "source": reference["evidence_source"],
+                    "quality": reference["evidence_quality"],
+                    "note": reference["evidence_note"],
+                },
+            }
+            for reference in references
+        ],
+    }
+
+
+def get_tender_snapshot(db_path: str | Path, tenant_id: str = DEFAULT_TENANT_ID) -> dict[str, Any]:
+    with connect(db_path) as connection:
+        tender = connection.execute(
+            """
+            SELECT * FROM tenders
+            WHERE tenant_id = ?
+            ORDER BY imported_at DESC
+            LIMIT 1
+            """,
+            (tenant_id,),
+        ).fetchone()
+        if tender is None:
+            raise LookupError(f"Tender not found for tenant: {tenant_id}")
+        requirements = connection.execute(
+            """
+            SELECT * FROM tender_requirements
+            WHERE tender_id = ?
+            ORDER BY id
+            """,
+            (tender["id"],),
+        ).fetchall()
+    return {
+        "id": tender["id"],
+        "tenant_id": tender["tenant_id"],
+        "title": tender["title"],
+        "buyer": tender["buyer"],
+        "country": tender["country"],
+        "estimated_value_eur": tender["estimated_value_eur"],
+        "source_url": tender["source_url"],
+        "deadline": tender["deadline"],
+        "requirements": [
+            {
+                "id": requirement["id"],
+                "text": requirement["requirement_text"],
+                "category": requirement["category"],
+                "mandatory": bool(requirement["mandatory"]),
+                "keywords": _loads(requirement["keywords_json"]),
+                "required_certification": requirement["required_certification"],
+                "min_contract_value_eur": requirement["min_contract_value_eur"],
+            }
+            for requirement in requirements
+        ],
+    }
+
+
+def get_latest_dossier_snapshot(db_path: str | Path, tenant_id: str = DEFAULT_TENANT_ID) -> dict[str, Any]:
+    with connect(db_path) as connection:
+        row = connection.execute(
+            """
+            SELECT
+              pd.id AS dossier_id,
+              pd.status AS dossier_status,
+              pd.selected_reference_ids_json,
+              pd.pricing_json,
+              pd.missing_information_json,
+              pd.source_attribution_json,
+              md.id AS match_decision_id,
+              md.score,
+              md.decision,
+              md.ko_reasons_json,
+              md.assessments_json,
+              ss.status AS submission_status,
+              ss.portal AS submission_portal,
+              ss.message AS submission_message,
+              os.awarded,
+              os.award_value_eur,
+              os.reason AS outcome_reason,
+              be.commission_rate,
+              be.commission_eur,
+              be.invoice_status,
+              be.payment_status
+            FROM proposal_dossiers pd
+            JOIN match_decisions md ON md.id = pd.match_decision_id
+            LEFT JOIN submission_simulations ss ON ss.proposal_dossier_id = pd.id
+            LEFT JOIN outcome_simulations os ON os.submission_simulation_id = ss.id
+            LEFT JOIN billing_events be ON be.outcome_simulation_id = os.id
+            WHERE pd.tenant_id = ?
+            ORDER BY pd.created_at DESC
+            LIMIT 1
+            """,
+            (tenant_id,),
+        ).fetchone()
+        if row is None:
+            raise LookupError(f"Proposal dossier not found for tenant: {tenant_id}")
+    return {
+        "id": row["dossier_id"],
+        "status": row["dossier_status"],
+        "match": {
+            "id": row["match_decision_id"],
+            "score": row["score"],
+            "decision": row["decision"],
+            "ko_reasons": _loads(row["ko_reasons_json"]),
+            "assessments": _loads(row["assessments_json"]),
+        },
+        "selected_reference_ids": _loads(row["selected_reference_ids_json"]),
+        "pricing": _loads(row["pricing_json"]),
+        "missing_information": _loads(row["missing_information_json"]),
+        "source_attribution": _loads(row["source_attribution_json"]),
+        "submission": {
+            "status": row["submission_status"],
+            "portal": row["submission_portal"],
+            "message": row["submission_message"],
+        },
+        "outcome": {
+            "awarded": bool(row["awarded"]),
+            "award_value_eur": row["award_value_eur"],
+            "reason": row["outcome_reason"],
+        },
+        "billing": {
+            "commission_rate": row["commission_rate"],
+            "commission_eur": row["commission_eur"],
+            "invoice_status": row["invoice_status"],
+            "payment_status": row["payment_status"],
+        },
+    }
+
+
 def table_count(db_path: str | Path, table: str) -> int:
     if not table.replace("_", "").isalnum():
         raise ValueError("Invalid table name")
@@ -308,5 +502,16 @@ def table_count(db_path: str | Path, table: str) -> int:
     return int(row["count"])
 
 
+def _count_for_tenant(connection: sqlite3.Connection, table: str, tenant_id: str) -> int:
+    row = connection.execute(f"SELECT COUNT(*) AS count FROM {table} WHERE tenant_id = ?", (tenant_id,)).fetchone()
+    return int(row["count"])
+
+
 def _json(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False, sort_keys=True)
+
+
+def _loads(value: str | None) -> Any:
+    if value is None:
+        return None
+    return json.loads(value)
