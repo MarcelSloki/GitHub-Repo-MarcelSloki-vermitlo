@@ -20,7 +20,11 @@ def run_demo(approved: bool = True) -> dict:
     approval = Approval(
         approved=approved,
         approver="Demo Approver" if approved else None,
-        note="Synthetic approval for local MVP demo" if approved else "Approval intentionally withheld",
+        note=(
+            "Approved with condition: clarify ISO 27001 before real submission"
+            if approved
+            else "Approval intentionally withheld"
+        ),
     )
     submission = simulate_submission(dossier, approval)
     outcome = simulate_outcome(submission, dossier)
@@ -38,5 +42,26 @@ def run_demo(approved: bool = True) -> dict:
             "outcome": outcome,
             "billing": billing,
             "learning": learning,
+            "audit_log": [
+                "company_profile.created",
+                "tender.imported",
+                "tender.requirements_analyzed",
+                "match.evaluated",
+                "pricing.draft_created",
+                "references.selected",
+                "dossier.generated",
+                "approval.completed",
+                "submission.simulated",
+                "outcome.simulated",
+                "billing.success_fee_calculated",
+                "payment.sandbox_completed",
+                "learning.event_recorded",
+            ],
+            "boundaries": {
+                "source": "synthetic_golden_demo",
+                "submission": "sandbox_only",
+                "payment": "sandbox_only",
+                "legal_submission_allowed": False,
+            },
         }
     )

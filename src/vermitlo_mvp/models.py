@@ -34,14 +34,25 @@ class ReferenceProject:
 
 
 @dataclass(frozen=True)
+class PricingDefaults:
+    person_days: int
+    day_rate_eur: int
+    contingency_pct: float
+    success_fee_pct: float
+
+
+@dataclass(frozen=True)
 class CompanyProfile:
     id: str
     legal_name: str
     country: str
+    location: str
+    company_size: str
     industries: list[str]
     capabilities: list[str]
     certifications: list[str]
     max_contract_value_eur: int
+    pricing_defaults: PricingDefaults
     references: list[ReferenceProject] = field(default_factory=list)
 
 
@@ -54,6 +65,16 @@ class TenderRequirement:
     keywords: list[str]
     required_certification: str | None = None
     min_contract_value_eur: int | None = None
+    min_references: int | None = None
+
+
+@dataclass(frozen=True)
+class KnockoutCriterion:
+    id: str
+    text: str
+    severity: str
+    status: str
+    note: str | None = None
 
 
 @dataclass(frozen=True)
@@ -62,10 +83,14 @@ class Tender:
     title: str
     buyer: str
     country: str
+    delivery_location: str
     estimated_value_eur: int
+    source_type: str
     source_url: str
     deadline: str
+    documents: list[str]
     requirements: list[TenderRequirement]
+    knockout_criteria: list[KnockoutCriterion]
 
 
 @dataclass(frozen=True)
@@ -80,12 +105,16 @@ class RequirementAssessment:
 class MatchResult:
     score: int
     decision: Decision
+    recommendation: str
     ko_reasons: list[str]
+    warnings: list[str]
     assessments: list[RequirementAssessment]
 
 
 @dataclass(frozen=True)
 class PricingPlan:
+    person_days: int
+    day_rate_eur: int
     base_price_eur: int
     contingency_eur: int
     total_price_eur: int
@@ -94,16 +123,20 @@ class PricingPlan:
 
 @dataclass(frozen=True)
 class OfferDossier:
+    id: str
     tender_id: str
     company_id: str
     decision: Decision
+    recommendation: str
     match_score: int
     ko_reasons: list[str]
+    warnings: list[str]
     selected_reference_ids: list[str]
     pricing: PricingPlan
     approval_required: bool
     missing_information: list[str]
     source_attribution: list[str]
+    sections: list[str]
 
 
 @dataclass(frozen=True)
@@ -118,6 +151,7 @@ class SubmissionResult:
     status: SubmissionStatus
     portal: str
     message: str
+    external_portal_called: bool
 
 
 @dataclass(frozen=True)
@@ -131,8 +165,10 @@ class OutcomeResult:
 class BillingResult:
     commission_rate: float
     commission_eur: int
+    invoice_id: str | None
     invoice_status: str
     payment_status: str
+    real_charge_created: bool
 
 
 @dataclass(frozen=True)

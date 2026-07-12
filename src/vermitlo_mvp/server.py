@@ -12,10 +12,13 @@ class Handler(BaseHTTPRequestHandler):
         if self.path == "/health":
             self._json({"status": "ok", "service": "vermitlo-mvp"})
             return
+        if self.path == "/demo/golden-flow":
+            self._json(run_demo(approved=True))
+            return
         self._json({"error": "not_found"}, status=404)
 
     def do_POST(self) -> None:
-        if self.path != "/demo/run":
+        if self.path not in {"/demo/run", "/demo/golden-flow/run"}:
             self._json({"error": "not_found"}, status=404)
             return
 
