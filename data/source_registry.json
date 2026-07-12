@@ -1,0 +1,53 @@
+[
+  {
+    "id": "ted-api",
+    "name": "TED API",
+    "operator": "Publications Office of the European Union",
+    "jurisdiction": "EU",
+    "scope": "EU public procurement notices and eForms workflows",
+    "status": "candidate_official_source",
+    "access_url": "https://developer.ted.europa.eu/",
+    "documentation_url": "https://docs.ted.europa.eu/api/latest/index.html",
+    "adapter_status": "planned",
+    "mvp_allowed_actions": ["search_notices", "retrieve_notices", "source_attribution"],
+    "mvp_forbidden_actions": ["submit_notice", "manage_notice_publication", "bypass_portal_rules"],
+    "notes": [
+      "Use for notice search/retrieval in MVP before any publication or submission workflow.",
+      "Submission-related API capabilities require separate authority and are out of scope for the MVP."
+    ]
+  },
+  {
+    "id": "doe-bekanntmachungsservice",
+    "name": "Datenservice Oeffentlicher Einkauf - Bekanntmachungsservice",
+    "operator": "Beschaffungsamt des BMI",
+    "jurisdiction": "DE",
+    "scope": "German EU-wide and national procurement notices from federal, state, and municipal buyers",
+    "status": "candidate_official_source",
+    "access_url": "https://oeffentlichevergabe.de/",
+    "documentation_url": "https://www.bescha.bund.de/DE/ElektronischerEinkauf/Datenservice_Oeffentlicher_Einkauf/Datenservice-Oeffentlicher-Einkauf_node.html",
+    "adapter_status": "planned",
+    "mvp_allowed_actions": ["search_notices", "retrieve_notices", "source_attribution"],
+    "mvp_forbidden_actions": ["submit_bid", "download_restricted_documents_without_access", "bypass_portal_rules"],
+    "notes": [
+      "Preferred first German discovery source once a supported retrieval interface is selected.",
+      "The MVP may reference public notices but must not automate portal submission."
+    ]
+  },
+  {
+    "id": "service-bund-notices",
+    "name": "service.bund.de Ausschreibungsinformationen",
+    "operator": "Bundesverwaltungsamt / Bundesportal context",
+    "jurisdiction": "DE",
+    "scope": "Public tender information and notice pages",
+    "status": "monitor_or_fallback_source",
+    "access_url": "https://www.service.bund.de/Content/DE/Service/Ausschreibungsinfos/ausschreibungsinfos_node.html",
+    "documentation_url": "https://www.service.bund.de/Content/DE/Service/Ausschreibungsinfos/ausschreibungsinfos_node.html",
+    "adapter_status": "not_selected_for_first_adapter",
+    "mvp_allowed_actions": ["manual_review", "source_attribution"],
+    "mvp_forbidden_actions": ["scrape_restricted_documents", "submit_bid", "bypass_portal_rules"],
+    "notes": [
+      "Keep as a fallback/reference source while prioritizing the central Bekanntmachungsservice.",
+      "Do not build brittle scraping until legal and technical access terms are checked."
+    ]
+  }
+]

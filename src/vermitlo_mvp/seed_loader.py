@@ -4,7 +4,15 @@ import json
 from pathlib import Path
 from typing import Any
 
-from .models import CompanyProfile, Evidence, ReferenceProject, Tender, TenderRequirement
+from .models import (
+    CompanyProfile,
+    Evidence,
+    KnockoutCriterion,
+    PricingDefaults,
+    ReferenceProject,
+    Tender,
+    TenderRequirement,
+)
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -22,16 +30,19 @@ def load_company_profile(path: Path | None = None) -> CompanyProfile:
     ]
     return CompanyProfile(
         references=references,
-        **{key: value for key, value in payload.items() if key != "references"},
+        pricing_defaults=PricingDefaults(**payload["pricing_defaults"]),
+        **{key: value for key, value in payload.items() if key not in {"references", "pricing_defaults"}},
     )
 
 
 def load_tender(path: Path | None = None) -> Tender:
     payload = _read_json(path or DATA_DIR / "tender.json")
     requirements = [TenderRequirement(**item) for item in payload["requirements"]]
+    knockout_criteria = [KnockoutCriterion(**item) for item in payload["knockout_criteria"]]
     return Tender(
         requirements=requirements,
-        **{key: value for key, value in payload.items() if key != "requirements"},
+        knockout_criteria=knockout_criteria,
+        **{key: value for key, value in payload.items() if key not in {"requirements", "knockout_criteria"}},
     )
 
 
