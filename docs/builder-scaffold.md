@@ -4,7 +4,7 @@ This document records the visible builder scaffold that was mirrored into the re
 
 ## Mirrored structure
 
-- `apps/api`: FastAPI backend shell with a `/health` endpoint
+- `apps/api`: FastAPI backend shell with `/health` and `/demo/run` endpoints
 - `apps/web`: Next.js frontend shell for the visible MVP workflow areas
 - `docker-compose.yml`: local orchestration baseline for API and web services
 
@@ -12,6 +12,10 @@ This document records the visible builder scaffold that was mirrored into the re
 
 The repository already contains a Python MVP core under `src/vermitlo_mvp` with a documented demo flow in the root `README.md`. That structure remains the current executable product core. The new `apps/` scaffold is added alongside it as the next frontend/backend app foundation, not as a replacement.
 
+## Current API bridge
+
+`apps/api/main.py` imports the existing `vermitlo_mvp.workflow.run_demo` function and exposes it through `POST /demo/run`. The Docker Compose API service mounts the repository root so both `src/` and `data/` are available to the FastAPI app.
+
 ## Current boundary
 
-This scaffold is intentionally small. It does not yet include authentication, relational persistence, migrations, seed data, or the full domain API. Those are the next Stage 2 repository steps.
+This scaffold is intentionally small. It does not yet include authentication, relational persistence, migrations, seed data beyond the existing demo JSON, or the full domain API. Those are the next Stage 2 repository steps.
