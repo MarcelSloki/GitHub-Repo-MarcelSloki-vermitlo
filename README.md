@@ -45,6 +45,14 @@ match evaluations, pricing drafts, dossiers, approvals, submission simulations,
 outcome simulations, billing, invoices, payment simulations, and audit log
 entries.
 
+## Source registry
+
+The first official-source registry is in `data/source_registry.json`.
+It marks TED API and Germany's Datenservice Oeffentlicher Einkauf /
+Bekanntmachungsservice as candidate discovery sources, while keeping bid
+submission, notice publication, restricted document access, and portal-rule
+bypass explicitly forbidden for the MVP.
+
 ## MVP boundaries
 
 - No legally binding offer is submitted without explicit human approval.
