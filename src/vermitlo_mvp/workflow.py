@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from .models import Approval, asdict_without_none
 from .adapters import get_default_import_adapter
+from .dossier_export import build_submission_package
 from .rules import (
     analyze_match,
     build_dossier,
@@ -19,6 +20,7 @@ def run_demo(approved: bool = True) -> dict:
     tender = imported.tender
     match = analyze_match(company, tender)
     dossier = build_dossier(company, tender, match)
+    submission_package = build_submission_package(dossier)
     approval = Approval(
         approved=approved,
         approver="Demo Approver" if approved else None,
@@ -39,6 +41,7 @@ def run_demo(approved: bool = True) -> dict:
             "tender": tender,
             "match": match,
             "dossier": dossier,
+            "submission_package": submission_package,
             "approval": approval,
             "submission": submission,
             "outcome": outcome,

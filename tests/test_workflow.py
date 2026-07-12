@@ -15,6 +15,8 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(result["import"]["source_id"], "doe-bekanntmachungsservice")
         self.assertFalse(result["import"]["external_request_performed"])
         self.assertEqual(result["match"]["score"], 78)
+        self.assertEqual(result["submission_package"]["status"], "draft_export_simulated")
+        self.assertFalse(result["submission_package"]["external_portal_called"])
         self.assertEqual(result["match"]["decision"], "bid")
         self.assertEqual(result["match"]["recommendation"], "bid_with_conditions")
         self.assertEqual(result["submission"]["status"], "simulated_submitted")

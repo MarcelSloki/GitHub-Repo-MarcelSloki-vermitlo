@@ -4,7 +4,13 @@ import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
 
-from .api import demo_import_payload, golden_flow_payload, health_payload, source_registry_payload
+from .api import (
+    demo_import_payload,
+    demo_submission_package_payload,
+    golden_flow_payload,
+    health_payload,
+    source_registry_payload,
+)
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -20,6 +26,9 @@ class Handler(BaseHTTPRequestHandler):
             return
         if self.path == "/imports/demo":
             self._json(demo_import_payload())
+            return
+        if self.path == "/dossiers/demo/submission-package":
+            self._json(demo_submission_package_payload())
             return
         self._json({"error": "not_found"}, status=404)
 
