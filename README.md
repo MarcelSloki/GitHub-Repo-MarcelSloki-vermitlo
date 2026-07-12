@@ -53,6 +53,11 @@ Bekanntmachungsservice as candidate discovery sources, while keeping bid
 submission, notice publication, restricted document access, and portal-rule
 bypass explicitly forbidden for the MVP.
 
+The first adapter stub is `BekanntmachungsserviceMockAdapter`. It uses the
+German Bekanntmachungsservice registry entry but deliberately imports the local
+Golden Flow tender fixture only. It performs no live HTTP request and exposes
+its allowed and forbidden actions for tests and UI badges.
+
 ## MVP boundaries
 
 - No legally binding offer is submitted without explicit human approval.

@@ -12,6 +12,8 @@ class WorkflowTest(unittest.TestCase):
 
         self.assertEqual(result["company"]["legal_name"], "RheinMain Digital GmbH")
         self.assertEqual(result["tender"]["id"], "tender-demo-essen-2026-001")
+        self.assertEqual(result["import"]["source_id"], "doe-bekanntmachungsservice")
+        self.assertFalse(result["import"]["external_request_performed"])
         self.assertEqual(result["match"]["score"], 78)
         self.assertEqual(result["match"]["decision"], "bid")
         self.assertEqual(result["match"]["recommendation"], "bid_with_conditions")

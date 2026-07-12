@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from .models import Approval, asdict_without_none
+from .adapters import get_default_import_adapter
 from .rules import (
     analyze_match,
     build_dossier,
@@ -9,12 +10,13 @@ from .rules import (
     simulate_outcome,
     simulate_submission,
 )
-from .seed_loader import load_company_profile, load_tender
+from .seed_loader import load_company_profile
 
 
 def run_demo(approved: bool = True) -> dict:
     company = load_company_profile()
-    tender = load_tender()
+    imported = get_default_import_adapter().import_notice("tender-demo-essen-2026-001")
+    tender = imported.tender
     match = analyze_match(company, tender)
     dossier = build_dossier(company, tender, match)
     approval = Approval(
@@ -42,6 +44,7 @@ def run_demo(approved: bool = True) -> dict:
             "outcome": outcome,
             "billing": billing,
             "learning": learning,
+            "import": imported,
             "audit_log": [
                 "company_profile.created",
                 "tender.imported",
