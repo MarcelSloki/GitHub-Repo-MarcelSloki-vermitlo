@@ -20,13 +20,13 @@ This repository starts with a small executable core that makes the end-to-end fl
 ## Run locally
 
 ```bash
-python -m vermitlo_mvp.demo
+PYTHONPATH=src python -m vermitlo_mvp.demo
 ```
 
 For a tiny local HTTP API:
 
 ```bash
-python -m vermitlo_mvp.server
+PYTHONPATH=src python -m vermitlo_mvp.server
 ```
 
 Then open `http://127.0.0.1:8000/health` or post to `http://127.0.0.1:8000/demo/run`.
@@ -34,7 +34,7 @@ Then open `http://127.0.0.1:8000/health` or post to `http://127.0.0.1:8000/demo/
 ## Run tests
 
 ```bash
-python -m unittest discover -s tests
+PYTHONPATH=src python -m unittest discover -s tests
 ```
 
 ## MVP boundaries
