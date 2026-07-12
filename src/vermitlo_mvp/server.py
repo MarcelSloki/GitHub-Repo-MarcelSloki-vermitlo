@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
 
@@ -39,8 +40,10 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main() -> None:
-    server = ThreadingHTTPServer(("127.0.0.1", 8000), Handler)
-    print("Vermitlo MVP server listening on http://127.0.0.1:8000")
+    host = os.environ.get("VERMITLO_HOST", "127.0.0.1")
+    port = int(os.environ.get("VERMITLO_PORT", "8000"))
+    server = ThreadingHTTPServer((host, port), Handler)
+    print(f"Vermitlo MVP server listening on http://{host}:{port}")
     server.serve_forever()
 
 

@@ -1,4 +1,0 @@
-services:
-  backend:
-    command: >
-      sh -c "PYTHONPATH=src python -c 'from http.server import ThreadingHTTPServer; from vermitlo_mvp.server import Handler; server = ThreadingHTTPServer((\"0.0.0.0\", 8000), Handler); print(\"Vermitlo MVP server listening on http://0.0.0.0:8000\"); server.serve_forever()'"

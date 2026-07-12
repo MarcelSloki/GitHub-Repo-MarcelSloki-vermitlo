@@ -1,76 +1,53 @@
 const workflowSteps = [
-  "Company profile",
-  "Tender intake",
-  "Requirement and K.O. check",
-  "Transparent match score",
-  "Pricing preparation",
-  "Reference selection",
-  "Offer dossier",
-  "Human approval",
-  "Submission simulation",
-  "Award, billing, and learning simulation",
+  "Company profile intake",
+  "Tender import",
+  "Requirement and K.O. criteria analysis",
+  "Explainable match scoring",
+  "Proposal dossier preparation",
+  "Human approval before submission",
+  "Submission and outcome simulation",
+  "Commission, invoice, and payment simulation"
+];
+
+const currentBoundaries = [
+  "The Python core in src/vermitlo_mvp remains the executable workflow source of truth.",
+  "Real portal submission, production billing, and payment execution are not included in this slice.",
+  "The first buyer frame is tender-active companies in Germany, not only IT or software service providers."
 ];
 
 export default function Home() {
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        margin: 0,
-        padding: "48px 32px",
-        fontFamily:
-          'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-        color: "#172033",
-        background: "#f7f8fb",
-      }}
-    >
-      <section style={{ maxWidth: 960, margin: "0 auto" }}>
-        <p style={{ margin: "0 0 12px", fontSize: 14, fontWeight: 700, color: "#496179" }}>
-          Vermitlo MVP shell
-        </p>
-        <h1 style={{ margin: "0 0 16px", fontSize: 44, lineHeight: 1.08 }}>
-          Tender workflow control for German mid-market IT service providers
-        </h1>
-        <p style={{ maxWidth: 720, margin: "0 0 32px", fontSize: 18, lineHeight: 1.6 }}>
+    <main className="shell">
+      <section className="hero" aria-labelledby="page-title">
+        <p className="eyebrow">Vermitlo MVP shell</p>
+        <h1 id="page-title">Tender workflow control for tender-active companies</h1>
+        <p className="intro">
           This first interface layer wraps the executable Python MVP core. It makes the
-          current product path visible without claiming live portal submission, real
-          payment execution, or production tender-source integrations.
+          current product path visible for small, medium-sized, and larger companies with
+          recurring public-tender work, without claiming live portal submission, real payment
+          execution, or production tender-source integrations.
         </p>
+      </section>
 
-        <ol
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-            gap: 12,
-            margin: 0,
-            padding: 0,
-            listStyle: "none",
-          }}
-        >
+      <section aria-labelledby="workflow-title">
+        <h2 id="workflow-title">Current visible workflow</h2>
+        <ol className="workflow-grid">
           {workflowSteps.map((step, index) => (
-            <li
-              key={step}
-              style={{
-                minHeight: 96,
-                border: "1px solid #d9e0e8",
-                borderRadius: 8,
-                padding: 16,
-                background: "#ffffff",
-              }}
-            >
-              <span style={{ display: "block", marginBottom: 8, color: "#6b7f93" }}>
-                {String(index + 1).padStart(2, "0")}
-              </span>
+            <li key={step} className="workflow-step">
+              <span>{String(index + 1).padStart(2, "0")}</span>
               <strong>{step}</strong>
             </li>
           ))}
         </ol>
+      </section>
 
-        <p style={{ margin: "32px 0 0", fontSize: 14, lineHeight: 1.6, color: "#526276" }}>
-          Current boundary: approval, submission, outcome, billing, and payment remain
-          synthetic demo flows until explicit production access and legal/operational
-          clearance exist.
-        </p>
+      <section className="boundaries" aria-labelledby="boundaries-title">
+        <h2 id="boundaries-title">Current scope boundaries</h2>
+        <ul>
+          {currentBoundaries.map((boundary) => (
+            <li key={boundary}>{boundary}</li>
+          ))}
+        </ul>
       </section>
     </main>
   );
