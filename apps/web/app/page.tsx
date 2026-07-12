@@ -1,3 +1,5 @@
+import type { CSSProperties } from 'react';
+
 type DemoOverview = {
   current_goal: string;
   flow: string[];
@@ -40,7 +42,7 @@ const fallbackOverview: DemoOverview = {
   ],
 };
 
-const styles = {
+const styles: Record<string, CSSProperties> = {
   page: {
     margin: 0,
     minHeight: '100vh',
@@ -58,7 +60,7 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'center',
     gap: '16px',
-    flexWrap: 'wrap' as const,
+    flexWrap: 'wrap',
     paddingBottom: '28px',
     borderBottom: '1px solid #d9dee7',
   },
