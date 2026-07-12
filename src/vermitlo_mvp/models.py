@@ -100,7 +100,7 @@ class OfferDossier:
     match_score: int
     ko_reasons: list[str]
     selected_reference_ids: list[str]
-    pricing: PricingPlan
+    pricing: PricingPlan | None
     approval_required: bool
     missing_information: list[str]
     source_attribution: list[str]

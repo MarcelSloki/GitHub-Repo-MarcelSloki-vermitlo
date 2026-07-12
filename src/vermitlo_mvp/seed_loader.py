@@ -26,8 +26,9 @@ def load_company_profile(path: Path | None = None) -> CompanyProfile:
     )
 
 
-def load_tender(path: Path | None = None) -> Tender:
-    payload = _read_json(path or DATA_DIR / "tender.json")
+def load_tender(path: Path | None = None, no_go: bool = False) -> Tender:
+    default_file = "tender_no_go.json" if no_go else "tender.json"
+    payload = _read_json(path or DATA_DIR / default_file)
     requirements = [TenderRequirement(**item) for item in payload["requirements"]]
     return Tender(
         requirements=requirements,

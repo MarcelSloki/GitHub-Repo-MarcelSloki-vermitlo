@@ -12,9 +12,9 @@ from .rules import (
 from .seed_loader import load_company_profile, load_tender
 
 
-def run_demo(approved: bool = True) -> dict:
+def run_demo(approved: bool = True, no_go: bool = False) -> dict:
     company = load_company_profile()
-    tender = load_tender()
+    tender = load_tender(no_go=no_go)
     match = analyze_match(company, tender)
     dossier = build_dossier(company, tender, match)
     approval = Approval(

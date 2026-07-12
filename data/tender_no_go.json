@@ -1,0 +1,34 @@
+{
+  "id": "tender-demo-2026-002",
+  "title": "Classified critical infrastructure operations",
+  "buyer": "Demo Federal Buyer",
+  "country": "DE",
+  "estimated_value_eur": 1200000,
+  "source_url": "https://example.invalid/public-tender/demo-2026-002",
+  "deadline": "2026-08-30",
+  "requirements": [
+    {
+      "id": "req-ng-001",
+      "text": "Supplier must hold Geheimschutzbetreuung clearance.",
+      "category": "certification",
+      "mandatory": true,
+      "keywords": ["classified-operations"],
+      "required_certification": "Geheimschutzbetreuung"
+    },
+    {
+      "id": "req-ng-002",
+      "text": "Supplier must provide classified operations staffing.",
+      "category": "capability",
+      "mandatory": true,
+      "keywords": ["classified-operations"]
+    },
+    {
+      "id": "req-ng-003",
+      "text": "Supplier must have capacity for projects above EUR 1,000,000.",
+      "category": "capacity",
+      "mandatory": true,
+      "keywords": ["project-management"],
+      "min_contract_value_eur": 1000000
+    }
+  ]
+}
