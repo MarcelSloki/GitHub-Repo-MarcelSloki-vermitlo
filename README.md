@@ -31,6 +31,11 @@ PYTHONPATH=src python -m vermitlo_mvp.server
 
 Then open `http://127.0.0.1:8000/health`, `http://127.0.0.1:8000/demo/golden-flow`, or post to `http://127.0.0.1:8000/demo/run`.
 
+Additional read-only demo API endpoints:
+
+- `GET /sources`
+- `GET /imports/demo`
+
 ## Run tests
 
 ```bash

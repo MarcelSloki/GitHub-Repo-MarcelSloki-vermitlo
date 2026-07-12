@@ -1,0 +1,45 @@
+import unittest
+
+from vermitlo_mvp.api import (
+    demo_import_payload,
+    golden_flow_payload,
+    health_payload,
+    source_registry_payload,
+)
+
+
+class ApiPayloadTest(unittest.TestCase):
+    def test_golden_flow_payload_exposes_import_metadata(self):
+        payload = golden_flow_payload()
+
+        self.assertEqual(payload["import"]["source_id"], "doe-bekanntmachungsservice")
+        self.assertEqual(payload["import"]["mode"], "fixture_only")
+        self.assertFalse(payload["import"]["external_request_performed"])
+        self.assertIn("submit_bid", payload["import"]["forbidden_actions"])
+
+    def test_demo_run_payload_can_show_blocked_submission(self):
+        payload = golden_flow_payload(approved=False)
+
+        self.assertEqual(payload["approval"]["approved"], False)
+        self.assertEqual(payload["submission"]["status"], "blocked_pending_approval")
+        self.assertFalse(payload["submission"]["external_portal_called"])
+
+    def test_source_registry_payload_exposes_first_adapter_candidate(self):
+        payload = source_registry_payload()
+
+        self.assertEqual(payload["first_adapter_candidate"]["id"], "doe-bekanntmachungsservice")
+        self.assertEqual(len(payload["sources"]), 3)
+
+    def test_demo_import_payload_is_fixture_only(self):
+        payload = demo_import_payload()
+
+        self.assertEqual(payload["import"]["notice_id"], "tender-demo-essen-2026-001")
+        self.assertEqual(payload["import"]["tender"]["id"], "tender-demo-essen-2026-001")
+        self.assertFalse(payload["import"]["external_request_performed"])
+
+    def test_health_payload(self):
+        self.assertEqual(health_payload(), {"status": "ok", "service": "vermitlo-mvp"})
+
+
+if __name__ == "__main__":
+    unittest.main()

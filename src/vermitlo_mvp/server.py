@@ -4,16 +4,22 @@ import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
 
-from .workflow import run_demo
+from .api import demo_import_payload, golden_flow_payload, health_payload, source_registry_payload
 
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
         if self.path == "/health":
-            self._json({"status": "ok", "service": "vermitlo-mvp"})
+            self._json(health_payload())
             return
         if self.path == "/demo/golden-flow":
-            self._json(run_demo(approved=True))
+            self._json(golden_flow_payload(approved=True))
+            return
+        if self.path == "/sources":
+            self._json(source_registry_payload())
+            return
+        if self.path == "/imports/demo":
+            self._json(demo_import_payload())
             return
         self._json({"error": "not_found"}, status=404)
 
@@ -27,7 +33,7 @@ class Handler(BaseHTTPRequestHandler):
         if length:
             payload = json.loads(self.rfile.read(length).decode("utf-8"))
         approved = bool(payload.get("approved", True))
-        self._json(run_demo(approved=approved))
+        self._json(golden_flow_payload(approved=approved))
 
     def log_message(self, format: str, *args: Any) -> None:
         return
