@@ -23,13 +23,19 @@ This repository starts with a small executable core that makes the end-to-end fl
 PYTHONPATH=src python -m vermitlo_mvp.demo
 ```
 
+To persist the demo run with an audit log in `var/vermitlo_mvp.sqlite3`:
+
+```bash
+PYTHONPATH=src python -m vermitlo_mvp.demo --persist
+```
+
 For a tiny local HTTP API:
 
 ```bash
 PYTHONPATH=src python -m vermitlo_mvp.server
 ```
 
-Then open `http://127.0.0.1:8000/health` or post to `http://127.0.0.1:8000/demo/run`.
+Then open `http://127.0.0.1:8000/health`, post to `http://127.0.0.1:8000/demo/run`, or inspect persisted runs at `http://127.0.0.1:8000/runs`.
 
 ## Run tests
 
@@ -44,6 +50,7 @@ PYTHONPATH=src python -m unittest discover -s tests
 - Payment is a test simulation and never charges a real customer.
 - Missing company evidence is surfaced as missing, not invented.
 - Reference projects are only selected from the provided company profile.
+- Persisted runs contain synthetic MVP data and audit events only.
 
 ## Default assumptions
 

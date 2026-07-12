@@ -28,3 +28,10 @@
 2. Add a documented public tender source adapter behind the current seed import interface.
 3. Add a minimal web UI for bid/no-bid review and human approval.
 4. Replace payment simulation with a sandbox payment provider only after billing terms are validated.
+
+## Implemented in current persistence increment
+
+- SQLite-backed workflow run storage for synthetic MVP runs.
+- Audit events for tender import, scoring, dossier preparation, approval, submission simulation, billing simulation, and learning.
+- Server endpoint to list stored runs.
+- CLI flag `--persist` to store a local demo run.
