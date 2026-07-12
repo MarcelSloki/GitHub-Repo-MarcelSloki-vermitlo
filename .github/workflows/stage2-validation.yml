@@ -1,0 +1,73 @@
+name: Stage 2 validation
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - feat/first-web-shell-and-local-orchestration
+
+jobs:
+  python-core:
+    name: Python MVP core
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run unit tests
+        run: PYTHONPATH=src python -m unittest discover -s tests
+
+      - name: Run demo flow
+        run: PYTHONPATH=src python -m vermitlo_mvp.demo
+
+      - name: Smoke test local server
+        run: |
+          PYTHONPATH=src VERMITLO_HOST=127.0.0.1 VERMITLO_PORT=8000 python -m vermitlo_mvp.server &
+          server_pid=$!
+          trap 'kill $server_pid' EXIT
+          for attempt in 1 2 3 4 5; do
+            if curl --fail --silent http://127.0.0.1:8000/health; then
+              break
+            fi
+            sleep 1
+          done
+          curl --fail --silent --request POST http://127.0.0.1:8000/demo/run \
+            --header 'content-type: application/json' \
+            --data '{"approved": true}' > /tmp/vermitlo-demo.json
+          test -s /tmp/vermitlo-demo.json
+
+  web-shell:
+    name: Web shell
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        working-directory: apps/web
+        run: npm install
+
+      - name: Build web shell
+        working-directory: apps/web
+        run: npm run build
+
+  compose-config:
+    name: Compose config
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate compose file
+        run: docker compose config
