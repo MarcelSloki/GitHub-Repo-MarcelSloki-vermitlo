@@ -19,6 +19,8 @@ class WorkflowTest(unittest.TestCase):
         self.assertFalse(result["submission_package"]["external_portal_called"])
         self.assertEqual(result["match"]["decision"], "bid")
         self.assertEqual(result["match"]["recommendation"], "bid_with_conditions")
+        self.assertEqual(result["approval"]["decision"], "approved_with_conditions")
+        self.assertFalse(result["approval"]["legal_submission_allowed"])
         self.assertEqual(result["submission"]["status"], "simulated_submitted")
         self.assertEqual(result["billing"]["invoice_status"], "sandbox_invoice_created")
         self.assertEqual(result["billing"]["payment_status"], "sandbox_paid")

@@ -1,6 +1,7 @@
 import unittest
 
 from vermitlo_mvp.api import (
+    demo_approval_payload,
     demo_import_payload,
     demo_submission_package_payload,
     golden_flow_payload,
@@ -21,7 +22,8 @@ class ApiPayloadTest(unittest.TestCase):
     def test_demo_run_payload_can_show_blocked_submission(self):
         payload = golden_flow_payload(approved=False)
 
-        self.assertEqual(payload["approval"]["approved"], False)
+        self.assertEqual(payload["approval"]["decision"], "blocked")
+        self.assertEqual(payload["approval"]["audit_event"], "approval.blocked")
         self.assertEqual(payload["submission"]["status"], "blocked_pending_approval")
         self.assertFalse(payload["submission"]["external_portal_called"])
 
@@ -46,6 +48,15 @@ class ApiPayloadTest(unittest.TestCase):
         self.assertIn("Angebotsdossier.pdf", package["files"])
         self.assertFalse(package["external_portal_called"])
         self.assertFalse(package["legal_submission_allowed"])
+
+    def test_demo_approval_payload_is_structured_and_conditional(self):
+        payload = demo_approval_payload()
+        approval = payload["approval"]
+
+        self.assertEqual(approval["role"], "commercial_approver")
+        self.assertEqual(approval["decision"], "approved_with_conditions")
+        self.assertFalse(approval["legal_submission_allowed"])
+        self.assertTrue(approval["conditions"])
 
     def test_health_payload(self):
         self.assertEqual(health_payload(), {"status": "ok", "service": "vermitlo-mvp"})

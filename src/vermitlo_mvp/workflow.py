@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from .models import Approval, asdict_without_none
 from .adapters import get_default_import_adapter
+from .approvals import approval_to_submission_input, decide_approval
 from .dossier_export import build_submission_package
 from .rules import (
     analyze_match,
@@ -21,16 +22,8 @@ def run_demo(approved: bool = True) -> dict:
     match = analyze_match(company, tender)
     dossier = build_dossier(company, tender, match)
     submission_package = build_submission_package(dossier)
-    approval = Approval(
-        approved=approved,
-        approver="Demo Approver" if approved else None,
-        note=(
-            "Approved with condition: clarify ISO 27001 before real submission"
-            if approved
-            else "Approval intentionally withheld"
-        ),
-    )
-    submission = simulate_submission(dossier, approval)
+    approval = decide_approval(dossier, approved=approved)
+    submission = simulate_submission(dossier, approval_to_submission_input(approval))
     outcome = simulate_outcome(submission, dossier)
     billing = calculate_billing(outcome)
     learning = record_learning(tender, match, outcome)

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from .adapters import get_default_import_adapter
+from .approvals import approval_payload, decide_approval
 from .dossier_export import submission_package_payload
 from .models import asdict_without_none
 from .rules import analyze_match, build_dossier
@@ -35,3 +36,11 @@ def demo_submission_package_payload() -> dict:
     match = analyze_match(company, imported.tender)
     dossier = build_dossier(company, imported.tender, match)
     return {"submission_package": submission_package_payload(dossier)}
+
+
+def demo_approval_payload(approved: bool = True) -> dict:
+    imported = get_default_import_adapter().import_notice("tender-demo-essen-2026-001")
+    company = load_company_profile()
+    match = analyze_match(company, imported.tender)
+    dossier = build_dossier(company, imported.tender, match)
+    return {"approval": approval_payload(decide_approval(dossier, approved=approved))}

@@ -36,6 +36,7 @@ Additional read-only demo API endpoints:
 - `GET /sources`
 - `GET /imports/demo`
 - `GET /dossiers/demo/submission-package`
+- `GET /approvals/demo`
 
 ## Run tests
 

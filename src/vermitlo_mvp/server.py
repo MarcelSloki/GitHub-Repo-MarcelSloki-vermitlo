@@ -5,6 +5,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
 
 from .api import (
+    demo_approval_payload,
     demo_import_payload,
     demo_submission_package_payload,
     golden_flow_payload,
@@ -29,6 +30,9 @@ class Handler(BaseHTTPRequestHandler):
             return
         if self.path == "/dossiers/demo/submission-package":
             self._json(demo_submission_package_payload())
+            return
+        if self.path == "/approvals/demo":
+            self._json(demo_approval_payload(approved=True))
             return
         self._json({"error": "not_found"}, status=404)
 
