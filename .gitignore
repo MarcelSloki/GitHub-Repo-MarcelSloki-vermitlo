@@ -8,3 +8,17 @@ venv/
 dist/
 build/
 *.egg-info/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+
+# Local environment
+.env
+.env.local
+.env.*.local
+
+# OS / editor
+.DS_Store
+.vscode/
