@@ -74,7 +74,7 @@ const styles: Record<string, CSSProperties> = {
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'minmax(0, 1.2fr) minmax(280px, 0.8fr)',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
     gap: '24px',
     marginTop: '32px',
   },
