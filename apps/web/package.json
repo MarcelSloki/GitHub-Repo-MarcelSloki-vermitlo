@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run test:product-truth && next build",
+    "test:product-truth": "node --test tests/product-truth.test.mjs",
     "start": "next start"
   },
   "dependencies": {

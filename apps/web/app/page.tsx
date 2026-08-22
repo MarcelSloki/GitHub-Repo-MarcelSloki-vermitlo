@@ -138,7 +138,11 @@ export default async function Home() {
 
         <section style={{ ...styles.panel, marginTop: '24px' }}>
           <p style={{ margin: '0 0 18px', fontWeight: 700, color: '#334155' }}>
-            Golden path surfaced by the current backend
+            Intended synthetic product path
+          </p>
+          <p style={{ ...styles.muted, margin: '0 0 18px' }}>
+            The current backend exposes this sequence as an overview. Persisted workflow states,
+            official-source ingestion and Golden Path proof are not active yet.
           </p>
           <ol
             style={{
