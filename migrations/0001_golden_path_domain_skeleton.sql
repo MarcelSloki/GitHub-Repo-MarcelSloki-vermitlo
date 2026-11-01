@@ -32,6 +32,7 @@ CREATE TABLE company_profiles (
   missing_evidence_flags_json jsonb NOT NULL DEFAULT '[]'::jsonb,
   created_at timestamptz NOT NULL,
   updated_at timestamptz NOT NULL,
+  UNIQUE (tenant_id, id),
   CHECK (profile_status IN ('draft', 'evidence_ready', 'evidence_gaps', 'approved_for_demo'))
 );
 
@@ -54,6 +55,7 @@ CREATE TABLE tenders (
   imported_at timestamptz NOT NULL,
   created_at timestamptz NOT NULL,
   updated_at timestamptz NOT NULL,
+  UNIQUE (tenant_id, id),
   CHECK (source_type IN ('seed', 'public_source', 'mock_adapter')),
   CHECK (tender_status IN ('seeded', 'imported', 'parsed', 'analysis_ready', 'archived'))
 );
@@ -72,6 +74,9 @@ CREATE TABLE match_assessments (
   assessed_at timestamptz,
   created_at timestamptz NOT NULL,
   updated_at timestamptz NOT NULL,
+  UNIQUE (tenant_id, id),
+  FOREIGN KEY (tenant_id, company_profile_id) REFERENCES company_profiles(tenant_id, id),
+  FOREIGN KEY (tenant_id, tender_id) REFERENCES tenders(tenant_id, id),
   CHECK (assessment_status IN ('pending', 'assessed', 'blocked_by_exclusion', 'missing_evidence', 'recommended_bid', 'recommended_no_bid')),
   CHECK (recommendation IN ('pending', 'bid', 'no_bid', 'needs_review')),
   CHECK (score IS NULL OR (score >= 0 AND score <= 100))
@@ -95,6 +100,10 @@ CREATE TABLE proposal_dossiers (
   created_at timestamptz NOT NULL,
   updated_at timestamptz NOT NULL,
   UNIQUE (tenant_id, tender_id, company_profile_id),
+  UNIQUE (tenant_id, id),
+  FOREIGN KEY (tenant_id, tender_id) REFERENCES tenders(tenant_id, id),
+  FOREIGN KEY (tenant_id, company_profile_id) REFERENCES company_profiles(tenant_id, id),
+  FOREIGN KEY (tenant_id, match_assessment_id) REFERENCES match_assessments(tenant_id, id),
   CHECK (dossier_status IN ('not_started', 'drafting', 'draft_ready', 'blocked_missing_evidence', 'awaiting_approval', 'approved', 'rejected'))
 );
 
@@ -111,6 +120,8 @@ CREATE TABLE approval_tasks (
   decided_at timestamptz,
   created_at timestamptz NOT NULL,
   updated_at timestamptz NOT NULL,
+  UNIQUE (tenant_id, id),
+  FOREIGN KEY (tenant_id, proposal_dossier_id) REFERENCES proposal_dossiers(tenant_id, id),
   CHECK (approval_type IN ('submission_review', 'commercial_review', 'final_release')),
   CHECK (approval_status IN ('open', 'approved', 'rejected', 'changes_requested'))
 );
@@ -126,6 +137,8 @@ CREATE TABLE outcome_events (
   occurred_at timestamptz NOT NULL,
   created_at timestamptz NOT NULL,
   updated_at timestamptz NOT NULL,
+  UNIQUE (tenant_id, id),
+  FOREIGN KEY (tenant_id, proposal_dossier_id) REFERENCES proposal_dossiers(tenant_id, id),
   CHECK (outcome_status IN ('submission_simulated', 'award_simulated_won', 'award_simulated_lost', 'cancelled')),
   CHECK (event_type IN ('submission', 'award_decision')),
   CHECK (simulated = true)
@@ -143,6 +156,7 @@ CREATE TABLE billing_events (
   details_json jsonb NOT NULL DEFAULT '{}'::jsonb,
   created_at timestamptz NOT NULL,
   updated_at timestamptz NOT NULL,
+  FOREIGN KEY (tenant_id, outcome_event_id) REFERENCES outcome_events(tenant_id, id),
   CHECK (billing_status IN ('not_applicable', 'commission_calculated_test', 'invoice_generated_test', 'payment_simulated', 'voided')),
   CHECK (event_type IN ('commission', 'invoice', 'payment')),
   CHECK (currency = 'EUR'),
@@ -157,3 +171,4 @@ CREATE INDEX proposal_dossiers_tender_idx ON proposal_dossiers (tenant_id, tende
 CREATE INDEX approval_tasks_dossier_idx ON approval_tasks (tenant_id, proposal_dossier_id);
 CREATE INDEX outcome_events_dossier_idx ON outcome_events (tenant_id, proposal_dossier_id);
 CREATE INDEX billing_events_outcome_idx ON billing_events (tenant_id, outcome_event_id);
+

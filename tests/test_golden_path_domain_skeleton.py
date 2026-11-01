@@ -38,6 +38,20 @@ class GoldenPathDomainSkeletonTest(unittest.TestCase):
         self.assertNotIn("payment_collected", self.sql)
         self.assertNotIn("submission_live", self.sql)
 
+    def test_migration_enforces_tenant_scoped_relationships(self):
+        tenant_scoped_foreign_keys = [
+            "FOREIGN KEY (tenant_id, company_profile_id) REFERENCES company_profiles(tenant_id, id)",
+            "FOREIGN KEY (tenant_id, tender_id) REFERENCES tenders(tenant_id, id)",
+            "FOREIGN KEY (tenant_id, match_assessment_id) REFERENCES match_assessments(tenant_id, id)",
+            "FOREIGN KEY (tenant_id, proposal_dossier_id) REFERENCES proposal_dossiers(tenant_id, id)",
+            "FOREIGN KEY (tenant_id, outcome_event_id) REFERENCES outcome_events(tenant_id, id)",
+        ]
+
+        for foreign_key in tenant_scoped_foreign_keys:
+            self.assertIn(foreign_key, self.sql)
+
+        self.assertGreaterEqual(self.sql.count("UNIQUE (tenant_id, id)"), 6)
+
     def test_golden_fixture_links_from_tenant_through_billing(self):
         tenant_id = self.golden["tenant"]["id"]
         company = self.golden["company_profile"]
@@ -89,3 +103,4 @@ class GoldenPathDomainSkeletonTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
