@@ -1,0 +1,67 @@
+{
+  "tenant": {
+    "id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+    "name": "Blocked Evidence Demo",
+    "slug": "blocked-evidence-demo",
+    "country_code": "DE",
+    "tenant_status": "demo_active",
+    "demo_mode": true
+  },
+  "company_profile": {
+    "id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+    "tenant_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+    "legal_name": "RheinMain Digital GmbH",
+    "display_name": "RheinMain Digital",
+    "profile_status": "evidence_gaps",
+    "capabilities_json": ["cloud migration"],
+    "certifications_json": [],
+    "reference_projects_json": [],
+    "evidence_items_json": [],
+    "missing_evidence_flags_json": [{"name": "Mandatory ISO 27001 certificate", "blocking": true}]
+  },
+  "tender": {
+    "id": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+    "tenant_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+    "source_type": "seed",
+    "source_name": "synthetic public tender seed",
+    "external_reference": "DEMO-IT-2026-KO",
+    "title": "Security-sensitive managed operations tender",
+    "buyer_name": "Demo State Agency",
+    "country_code": "DE",
+    "tender_status": "analysis_ready",
+    "requirement_items_json": [
+      {"id": "REQ-SEC-1", "text": "Current ISO 27001 certificate", "mandatory": true}
+    ],
+    "exclusion_criteria_json": [
+      {"id": "KO-SEC-1", "text": "Missing mandatory ISO 27001 certificate", "hit": true}
+    ]
+  },
+  "match_assessment": {
+    "id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+    "tenant_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+    "company_profile_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+    "tender_id": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+    "assessment_status": "blocked_by_exclusion",
+    "score": 38,
+    "recommendation": "no_bid",
+    "exclusion_hits_json": [{"id": "KO-SEC-1", "text": "Missing mandatory ISO 27001 certificate"}],
+    "missing_evidence_json": [{"name": "Mandatory ISO 27001 certificate", "blocking": true}],
+    "rationale_json": ["Hard K.O. criterion is hit. Dossier must not advance to simulated submission or billing."]
+  },
+  "proposal_dossier": {
+    "id": "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+    "tenant_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+    "tender_id": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+    "company_profile_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+    "match_assessment_id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+    "title": "Blocked demo proposal dossier",
+    "dossier_status": "blocked_missing_evidence",
+    "selected_references_json": [],
+    "selected_evidence_items_json": [],
+    "generated_sections_json": [],
+    "unresolved_gaps_json": [{"name": "Mandatory ISO 27001 certificate", "blocking": true}]
+  },
+  "approval_task": null,
+  "outcome_event": null,
+  "billing_event": null
+}
